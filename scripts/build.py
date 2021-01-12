@@ -50,6 +50,9 @@ elif args.targets is None:
 else:
     build_targets = args.targets
 
+run('xxd -i src/flute/POST9.dat > src/flute/POST9.c')
+run('xxd -i src/flute/POWV9.dat > src/flute/POWV9.c')
+
 run('cmake src -B{} {} {}'.format(args.build_dir,
                                   mode_cmake_options[args.mode], args.cmake_options))
 run('mkdir -p {}'.format(args.run_dir))
@@ -64,7 +67,7 @@ for target in cp_targets:
     run('cp -u {}/{} {}'.format(args.build_dir, target, args.run_dir))
 
 # flute LUT
-run('cp src/flute/*.dat {}'.format(args.run_dir))
+# run('cp src/flute/*.dat {}'.format(args.run_dir))
 
 # unit test
 if args.unittest:

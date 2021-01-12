@@ -16,6 +16,11 @@
 #endif
 int numgrp[10]={0,0,0,0,6,30,180,1260,10080,90720};
 
+extern unsigned char src_flute_POST9_dat[];
+extern unsigned int src_flute_POST9_dat_len;
+extern unsigned char src_flute_POWV9_dat[];
+extern unsigned int src_flute_POWV9_dat_len;
+
 struct csoln
 {
     unsigned char parent;
@@ -67,14 +72,14 @@ void readLUT()
             charnum[i] = 0;
     }
 
-    fpwv=fopen(POWVFILE, "r");
+    fpwv=fmemopen(src_flute_POWV9_dat, src_flute_POWV9_dat_len, "r");
     if (fpwv == NULL) {
         printf("Error in opening %s\n", POWVFILE);
         exit(1);
     }
 
 #if ROUTING==1
-    fprt=fopen(POSTFILE, "r");
+    fprt=fmemopen(src_flute_POST9_dat, src_flute_POST9_dat_len, "r");
     if (fprt == NULL) {
         printf("Error in opening %s\n", POSTFILE);
         exit(1);
