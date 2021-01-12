@@ -562,6 +562,8 @@ db::CostT GrRouteGrid::getWireShortCost(const GrEdge& edge) const {
 
         auto wire_used = getWireUsage(tempEdge);
         DBU expected_of_len = fixed_used * getFixedLength(tempEdge) + wire_used * getWireDistCost(tempEdge);
+        if (grDatabase.getNumTracks(layerIdx, edge.u[dir]) == 0)
+            continue;
         expected_of_len /= max(grDatabase.getNumTracks(layerIdx, edge.u[dir]), 1);
         auto demand = fixed_used + wire_used + 1;
         demand += sqrt((getInCellViaNum(tempEdge.u) + getInCellViaNum(tempEdge.v)) / 2) * db::setting.unitSqrtViaUsage;
