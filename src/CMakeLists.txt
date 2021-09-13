@@ -3,7 +3,8 @@
 #########
 
 # Specify the minimum version for CMake
-cmake_minimum_required(VERSION 2.8)
+# 3.5+ needed for CMAKE_CXX_VISIBILITY_PRESET
+cmake_minimum_required(VERSION 3.5.0)
 
 # Message
 message(STATUS "ICCAD19 GR CUHK")
@@ -34,37 +35,35 @@ set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Werror=return-type")
 ######################
 # Check Dependencies #
 ######################
-# uncommment this line if you are using self-compiled boost lib
-set(Boost_USE_STATIC_LIBS ON)
 find_package(Boost COMPONENTS system filesystem program_options REQUIRED)
-# find_package(Threads)
 
 ###############
 # Source Code #
 ###############
+
+find_package(BISON REQUIRED)
+set(LEF_SRC_DIR ${PATH_RSYN}/lef/lef)
+set(DEF_SRC_DIR ${PATH_RSYN}/def/def)
+BISON_TARGET(LEF ${LEF_SRC_DIR}/lef.y ${LEF_SRC_DIR}/lef.tab.c COMPILE_FLAGS "-v -p lefyy -d")
+BISON_TARGET(DEF ${DEF_SRC_DIR}/def.y ${DEF_SRC_DIR}/def.tab.c COMPILE_FLAGS "-v -p defyy -d")
+
 file(GLOB_RECURSE SRC_FILES_RSYN
     ${PATH_RSYN}/src/*.cpp
     ${PATH_RSYN}/src/*.cc
-    ${PATH_RSYN}/src/*.c)
+    ${PATH_RSYN}/src/*.c
+    ${LEF_SRC_DIR}/*.cpp
+    ${DEF_SRC_DIR}/*.cpp
+    )
 
 file(GLOB_RECURSE SRC_FILES_ICCAD19
     ${PATH_ICCAD19}/*.cpp
     ${PATH_ICCAD19}/*.c)
 
-set(SRC_FILES ${SRC_FILES_RSYN} ${SRC_FILES_ICCAD19})
+set(SRC_FILES ${SRC_FILES_RSYN} ${SRC_FILES_ICCAD19} ${LEF_SRC_DIR}/lef.tab.c ${DEF_SRC_DIR}/def.tab.c)
 
-#################
-# Library Paths #
-#################
-# Need to come before target is created.
+SET_SOURCE_FILES_PROPERTIES(${LEF_SRC_DIR}/lef.tab.c ${DEF_SRC_DIR}/def.tab.c PROPERTIES LANGUAGE CXX)
 
-if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-link_directories(${PATH_RSYN}/lib/linux)
-endif()
-
-if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-link_directories(${PATH_RSYN}/lib/macosx)
-endif()
+set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
 ###########
 # Targets #
@@ -79,18 +78,11 @@ add_executable(iccad19gr ${SRC_FILES})
 include_directories(${PATH_RSYN}/src)
 include_directories(${PATH_RSYN}/src/rsyn/export)
 include_directories(${PATH_RSYN}/include)
+include_directories(${PATH_RSYN}/lef/include)
+include_directories(${PATH_RSYN}/def/include)
 include_directories(${PATH_ICCAD19})
 
-#################
-# Linker Flags  #
-#################
 
-# TODO: set static under release mode only
-set_target_properties(iccad19gr PROPERTIES LINK_FLAGS "-static -Wl,--whole-archive -rdynamic -lpthread -Wl,--no-whole-archive")
-
-# LEF/DEF
-target_link_libraries(iccad19gr lef)
-target_link_libraries(iccad19gr def)
 
 # Boost
 target_include_directories(iccad19gr PUBLIC ${Boost_INCLUDE_DIR})

@@ -17,6 +17,7 @@
 #include <iosfwd>
 #include <mutex>
 #include <boost/filesystem.hpp>
+#include <clocale>
 
 #include "Session.h"
 

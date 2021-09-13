@@ -1,7 +1,6 @@
-.vscode
-build
-debug
+.vscode/
+build/
 run*/
-scripts/__pycache__
-tags
+scripts/__pycache__/
+tags/
 

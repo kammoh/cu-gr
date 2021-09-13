@@ -169,14 +169,14 @@ MetalLayer::MetalLayer(Rsyn::PhysicalLayer rsynLayer,
                                         std::lround(eolWithin),
                                         std::lround(parSpace),
                                         std::lround(parWithin));
-                maxEolSpace = std::max(maxEolSpace, std::lround(space * libDBU));
-                maxEolWidth = std::max(maxEolWidth, std::lround(eolWidth * libDBU));
-                maxEolWithin = std::max(maxEolWithin, std::lround(eolWithin * libDBU));
+                maxEolSpace = std::max(maxEolSpace, std::llround(space * libDBU));
+                maxEolWidth = std::max(maxEolWidth, std::llround(eolWidth * libDBU));
+                maxEolWithin = std::max(maxEolWithin, std::llround(eolWithin * libDBU));
             } else if (hasEol) {
                 spaceRules.emplace_back(std::lround(space * libDBU), std::lround(eolWidth), std::lround(eolWithin));
-                maxEolSpace = std::max(maxEolSpace, std::lround(space * libDBU));
-                maxEolWidth = std::max(maxEolWidth, std::lround(eolWidth * libDBU));
-                maxEolWithin = std::max(maxEolWithin, std::lround(eolWithin * libDBU));
+                maxEolSpace = std::max(maxEolSpace, std::llround(space * libDBU));
+                maxEolWidth = std::max(maxEolWidth, std::llround(eolWidth * libDBU));
+                maxEolWithin = std::max(maxEolWithin, std::llround(eolWithin * libDBU));
             } else if (!numSpaceTable) {
                 parallelWidthSpace[0][0] = std::lround(space * libDBU);
                 defaultSpace = getParaRunSpace(width);
